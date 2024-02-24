@@ -1,9 +1,10 @@
 from flask import Flask
+from flask import render_template
 from flask import make_response
 app = Flask(__name__)
 @app.route('/')
 def home():
-    return "Hello World!"
+    return render_template('home.html')
 @app.route('/<page_name>')
 def other_page(page_name):
     response = make_response('The page named %s does not exist.' \
