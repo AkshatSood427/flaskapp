@@ -1,9 +1,7 @@
 from flask import Flask , render_template, request
 from flask_mysqldb import MySQL
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'akshat1'
@@ -26,7 +24,7 @@ def insertuser():
     email = request.form.get('email')
 
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO userdata (name , email) VALUES(%s , %s)", (name , email))
+    cur.execute("INSERT INTO users (username , email) VALUES(%s , %s)", (name , email))
 
     cur.connection.commit()
     cur.close()
