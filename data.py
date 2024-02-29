@@ -1,48 +1,44 @@
-from flask import Flask, jsonify, request
+from flask import Flask , render_template, request
 from flask_mysqldb import MySQL
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'akshat427'
-app.config['MYSQL_DB'] = 'mydatabase'
+app.config['MYSQL_USER'] = 'akshat1'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'userdata'
 
 mysql = MySQL(app)
 
-# API route to insert data into the 'users' table
-@app.route('/api/add_user', methods=['POST'])
-def add_user():
-    try:
-        name = request.json['name']
-        marks = request.json['marks']
+@app.route('/')
+def welcome():
+    return render_template('home.html')
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO users (name, marks) VALUES (%s, %s)", (name, marks))
-        mysql.connection.commit()
-        cur.close()
+@app.route('/adduser')
+def rendtemp():
+    return render_template('addform.html')
 
-        return jsonify(message='User added successfully')
+@app.route('/adduser', methods = ['get','POST'])
+def insertuser():
+    name = request.form.get('name')
+    email = request.form.get('email')
 
-    except Exception as e:
-        return jsonify(error=str(e))
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO userdata (name , email) VALUES(%s , %s)", (name , email))
 
-# API route to retrieve all users from the 'users' table
-@app.route('/api/get_users', methods=['GET'])
-def get_users():
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM mytable")
-        data = cur.fetchall()
-        cur.close()
+    cur.connection.commit()
+    cur.close()
 
-        return jsonify(users=data)
-
-    except Exception as e:
-        return jsonify(error=str(e))
+    return render_template('success.html', name = name)
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
+
+
+    
+
+ 
